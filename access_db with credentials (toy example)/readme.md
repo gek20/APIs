@@ -6,4 +6,4 @@ This is a toy example to add a user in the DB and how to use authentication (pas
 2. run the test.py file to verity that it is working correctly (change address if needed)
 3. if you passed all the test you should have created a db file with a "user" table with user and hash and a "object" table with the laptop info
 ## acknowledgements
-This code has been created following the Udacity course "Designing RESTful APIs"
+This code has been created following the Udacity course "Designing RESTful APIs".

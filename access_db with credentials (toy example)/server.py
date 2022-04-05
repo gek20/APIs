@@ -50,8 +50,8 @@ def get_resource():
 @auth.login_required
 def access_resources():
     if request.method == 'GET':
-        bagels = session.query(Object).all()
-        return jsonify(bagels=[bagel.serialize for bagel in bagels])
+        obj = session.query(Object).all()
+        return jsonify(bagels=[o.serialize for o in obj])
     elif request.method == 'POST':
         name = request.json.get('name')
         description = request.json.get('description')
