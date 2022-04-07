@@ -1,4 +1,4 @@
-### ACCESS WITH CREDENTIALS
+### ACCESS WITH CREDENTIALS AND TOKEN
 This is a toy example to add a user in the DB and how to use authentication (password and tokens) to perform some actions.
 
 ## How to run the code:
