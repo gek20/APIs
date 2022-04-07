@@ -22,6 +22,7 @@ jwt = JWTManager(app)
 # verify_password is called when we add the decorator @auth.login_required
 @auth.verify_password
 def verify_password(username, password):
+    ''' method to verify password with info stored in the db'''
     print("Looking for user %s" % username)
     user = session.query(User).filter_by(username=username).first()
     if not user or not user.verify_password(password):
@@ -32,16 +33,19 @@ def verify_password(username, password):
 
 @jwt.expired_token_loader
 def expired_token(jwt_header, jwt_payload):
+    ''' return message for expired token'''
     return jsonify(message="Access token expired", error=401), 401
 
 
 @jwt.invalid_token_loader
 def invalid_token(token):
+    ''' return message for invalid token'''
     return jsonify(message="Access token required", error=401), 401
 
 
 @app.route('/users/new', methods=['POST'])
 def new_user():
+    ''' create new user and return access token '''
     username = request.json.get("username")
     password = request.json.get("password")
     if username is None or password is None:
@@ -59,14 +63,16 @@ def new_user():
 
 @app.route('/users/access')
 @jwt_required()
-def get_resource():
+def get_user():
+    ''' test to check if token access works. It returns user identity if auth. works'''
     current_user = get_jwt_identity()
     return jsonify({'data': 'Hello, %s!' % current_user})
 
 
 @app.route('/resources', methods=['GET', 'POST'])
 @jwt_required()
-def access_resources():
+def manage_resources():
+    ''' add or get resources in the db'''
     if request.method == 'GET':
         obj = session.query(Object).all()
         return jsonify(bagels=[o.serialize for o in obj])
