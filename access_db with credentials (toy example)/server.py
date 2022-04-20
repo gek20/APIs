@@ -17,6 +17,7 @@ app = Flask(__name__)
 # verify_password is called when we add the decorator @auth.login_required
 @auth.verify_password
 def verify_password(username, password):
+    """ password based authentication method, it checks if the password hash is in the db"""
     print("Looking for user %s" % username)
     user = session.query(User).filter_by(username=username).first()
     if not user or not user.verify_password(password):
@@ -27,6 +28,7 @@ def verify_password(username, password):
 
 @app.route('/users', methods=['POST'])
 def new_user():
+    """ create a new user if it is not presetn in the db """
     username = request.json.get("username")
     password = request.json.get("password")
     if username is None or password is None:
@@ -35,7 +37,7 @@ def new_user():
         abort(400)
     user = User(username=username)
     user.hash_password(password)
-    session.add(user)  # add to db
+    session.add(user)
     session.commit()
     return jsonify({'username': user.username}), 201
 
@@ -43,15 +45,17 @@ def new_user():
 @app.route('/users/access')
 @auth.login_required
 def get_resource():
+    """ method to verify if the user can get access"""
     return jsonify({'data': 'Hello, %s!' % g.user.username})
 
 
 @app.route('/resources', methods=['GET', 'POST'])
 @auth.login_required
 def access_resources():
+    """ insert or get resources """
     if request.method == 'GET':
         obj = session.query(Object).all()
-        return jsonify(bagels=[o.serialize for o in obj])
+        return jsonify(object=[o.serialize for o in obj])
     elif request.method == 'POST':
         name = request.json.get('name')
         description = request.json.get('description')
